@@ -6,7 +6,6 @@ import utils
 import traceback
 import numpy as np
 import tensorflow as tf
-import data_mnist as data
 import models_64x64 as models
 import time
 
