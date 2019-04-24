@@ -165,7 +165,7 @@ try:
             data = (data+1)*0.5
             save_dir = './sample_images_while_training/data'
             utils.mkdir(save_dir + '/')
-            utils.saveModel(data,save_dir,100,it)
+            utils.saveModel(data,save_dir,64,it)
             
 
 except Exception:
