@@ -37,8 +37,8 @@ def fn(data,batch_size):
 """ graphs """
 with tf.device('/gpu:%d' % gpu_id):
     ''' models '''
-    generator = models.generator3d
-    discriminator = models.discriminator_wgan_gp_3d
+    generator = models.generator3dSlim
+    discriminator = models.discriminator_wgan_gp_3dSlim
 
     ''' graph '''
     # inputs
