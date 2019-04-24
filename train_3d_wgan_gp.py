@@ -161,7 +161,7 @@ try:
             f_sample_opt = sess.run(real, feed_dict={real: real_ipt})
             f_sample_opt = (f_sample_opt+1)*0.5
             f_sample_opt = np.round(f_sample_opt, decimals=0)
-
+            data = (data+1)*0.5
             save_dir = './sample_images_while_training/data'
             utils.mkdir(save_dir + '/')
             utils.saveModel(data,save_dir,100,it)
