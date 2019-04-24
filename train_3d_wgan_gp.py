@@ -162,9 +162,9 @@ try:
             f_sample_opt = (f_sample_opt+1)*0.5
             f_sample_opt = np.round(f_sample_opt, decimals=0)
 
-            save_dir = './sample_images_while_training/real'
+            save_dir = './sample_images_while_training/data'
             utils.mkdir(save_dir + '/')
-            utils.saveModel(f_sample_opt,save_dir,batch_size,it)
+            utils.saveModel(data,save_dir,100,it)
             
 
 except Exception:
