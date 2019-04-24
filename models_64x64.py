@@ -120,7 +120,7 @@ def generator3dSlim(z, dim=64, reuse=True, training=True):
         y = tf.reshape(y, [-1, 4, 4, 4, dim * 4])
         y = dconv_bn_relu(y, dim * 2, 5, 2)
         y = dconv_bn_relu(y, dim * 1, 5, 2)
-        img = tf.tanh(dconv3d(y, 3, 5, 2))
+        img = tf.tanh(dconv3d(y, 1, 5, 2))
         return img
     
 def discriminator_wgan_gp_3dSlim(img, dim=64, reuse=True, training=True):
