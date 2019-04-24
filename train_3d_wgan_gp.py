@@ -98,10 +98,10 @@ it_cnt, update_cnt = utils.counter()
 # saver
 saver = tf.train.Saver(max_to_keep=5)
 # summary writer
-summary_writer = tf.summary.FileWriter('./summaries/3dganFakeOnbiasPadsame', sess.graph)
+summary_writer = tf.summary.FileWriter('./summaries/3dganFakeSlim', sess.graph)
 
 ''' initialization '''
-ckpt_dir = './checkpoints/3dganFakeOnbiasPadsame'
+ckpt_dir = './checkpoints/3dganFakeSlim'
 utils.mkdir(ckpt_dir + '/')
 if not utils.load_checkpoint(ckpt_dir, sess):
     sess.run(tf.global_variables_initializer())
@@ -151,7 +151,7 @@ try:
             f_sample_opt = (f_sample_opt+1)*0.5
             f_sample_opt = np.round(f_sample_opt, decimals=0)
 
-            save_dir = './sample_images_while_training/3dganFakeOnbiasPadsame'
+            save_dir = './sample_images_while_training/3dganFakeSlim'
             utils.mkdir(save_dir + '/')
             utils.saveModel(f_sample_opt,save_dir,sample_batch_size,it)
             
