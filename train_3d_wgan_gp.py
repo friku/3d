@@ -164,7 +164,7 @@ try:
 
             save_dir = './sample_images_while_training/real'
             utils.mkdir(save_dir + '/')
-            utils.saveModel(f_sample_opt,save_dir,sample_batch_size,it)
+            utils.saveModel(f_sample_opt,save_dir,data.shape[0],it)
             
 
 except Exception:
