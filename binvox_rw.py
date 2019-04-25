@@ -140,6 +140,9 @@ def read_as_3d_array(fp, fix_coords=True):
     # j -> y
     # k -> z
     values, counts = raw_data[::2], raw_data[1::2]
+#    print(raw_data)
+    print(values)
+    print(counts)
     data = np.repeat(values, counts).astype(np.bool)
     data = data.reshape(dims)
     if fix_coords:
@@ -256,10 +259,11 @@ def write(voxel_model, fp):
         voxels_flat = dense_voxel_data.flatten()
     elif voxel_model.axis_order=='xyz':
         voxels_flat = np.transpose(dense_voxel_data, (0, 2, 1)).flatten()
-
+    print(voxels_flat)
     # keep a sort of state machine for writing run length encoding
     state = voxels_flat[0]
     ctr = 0
+    
     for c in voxels_flat:
         if c==state:
             ctr += 1
@@ -267,17 +271,75 @@ def write(voxel_model, fp):
             if ctr==255:
                 fp.write(chr(state))
                 fp.write(chr(ctr))
+                print("255:"+str(ctr))
                 ctr = 0
         else:
             # if switch state, dump
             fp.write(chr(state))
             fp.write(chr(ctr))
+            print(ctr)
             state = c
             ctr = 1
     # flush out remainders
+
     if ctr > 0:
         fp.write(chr(state))
         fp.write(chr(ctr))
+        
+def write1(voxel_model, file_name):
+    """ Write binary binvox format.
+
+    Note that when saving a model in sparse (coordinate) format, it is first
+    converted to dense format.
+
+    Doesn't check if the model is 'sane'.
+
+    """
+    with open(file_name, 'w') as fp:
+        if voxel_model.data.ndim==2:
+            # TODO avoid conversion to dense
+            dense_voxel_data = sparse_to_dense(voxel_model.data, voxel_model.dims)
+        else:
+            dense_voxel_data = voxel_model.data
+    
+        fp.write('#binvox 1\n')
+        fp.write('dim '+' '.join(map(str, voxel_model.dims))+'\n')
+        fp.write('translate '+' '.join(map(str, voxel_model.translate))+'\n')
+        fp.write('scale '+str(voxel_model.scale)+'\n')
+        fp.write('data\n')
+    with open(file_name, 'wb') as fp:
+        if not voxel_model.axis_order in ('xzy', 'xyz'):
+            raise ValueError('Unsupported voxel model axis order')
+    
+        if voxel_model.axis_order=='xzy':
+            voxels_flat = dense_voxel_data.flatten()
+        elif voxel_model.axis_order=='xyz':
+            voxels_flat = np.transpose(dense_voxel_data, (0, 2, 1)).flatten()
+        print(voxels_flat)
+        # keep a sort of state machine for writing run length encoding
+        state = voxels_flat[0]
+        ctr = 0
+        
+        for c in voxels_flat:
+            if c==state:
+                ctr += 1
+                # if ctr hits max, dump
+                if ctr==255:
+                    fp.write(int(state).to_bytes(1, 'big'))
+                    fp.write(int(ctr).to_bytes(1, 'big'))
+                    ctr = 0
+            else:
+                # if switch state, dump
+                fp.write(int(state).to_bytes(1, 'big'))
+                fp.write(int(ctr).to_bytes(1, 'big'))
+                print(ctr)
+                state = c
+                ctr = 1
+        # flush out remainders
+    
+        if ctr > 0:
+            fp.write(int(state).to_bytes(1, 'big'))
+            fp.write(int(ctr).to_bytes(1, 'big'))
 
 if __name__ == '__main__':
     import doctest
