@@ -371,7 +371,6 @@ def saveModel(data,save_dir,sample_batch_size,it):
     file_path = "./1a0c94a2e3e67e4a2e4877b52b3fca7.binvox"
     with open(file_path, 'rb') as f:
         model = binvox_rw.read_as_3d_array(f)
-        print(model.data.shape)
         divide = 4
         model.dims=[model.dims[0]//divide,model.dims[1]//divide,model.dims[2]//divide]
         model.scale = model.scale/divide
@@ -383,7 +382,6 @@ def saveModel(data,save_dir,sample_batch_size,it):
             model.data = data[i]
 #            print(model.data[8:22,:,:])
             binvox_rw.write1(model ,save_dir+'/'+filename)
-            print(model.data.shape)
 
 def LoadModel(path):
     file_path = path
