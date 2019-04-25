@@ -16,8 +16,8 @@ lrelu = partial(ops.leak_relu, leak=0.2)
 batch_norm = partial(slim.batch_norm, decay=0.9, scale=True, epsilon=1e-5, updates_collections=None)
 ln = slim.layer_norm
 
-conv3d = partial(slim.conv3d, activation_fn=None, weights_initializer=tf.truncated_normal_initializer(stddev=0.02))
-dconv3d = partial(slim.conv3d_transpose, activation_fn=None, weights_initializer=tf.random_normal_initializer(stddev=0.02))
+#conv3d = partial(slim.conv3d, activation_fn=None, weights_initializer=tf.truncated_normal_initializer(stddev=0.02))
+#dconv3d = partial(slim.conv3d_transpose, activation_fn=None, weights_initializer=tf.random_normal_initializer(stddev=0.02))
 
 
 def generator(z, dim=64, reuse=True, training=True):
@@ -81,15 +81,15 @@ def generator3d(z, dim=64, reuse=True, training=True):
         y = fc_bn_relu(z, 4 * 4 * 4 * dim * 4)
         y = tf.reshape(y, [-1, 4, 4, 4, dim * 4])
         print(y)
-        y = tf.layers.conv3d_transpose(y,dim*2,5,2,padding='same')
+        y = tf.layers.conv3d_transpose(y,dim*2,5,2,padding='same',use_bias=False)
 #        y = tf.contrib.layers.bias_add(y)
         y = relu(y)
         y = bn(y)
-        y = tf.layers.conv3d_transpose(y,dim*1,5,2,padding='same')
+        y = tf.layers.conv3d_transpose(y,dim*1,5,2,padding='same',use_bias=False)
 #        y = tf.contrib.layers.bias_add(y)
         y = relu(y)
         y = bn(y)
-        y = tf.layers.conv3d_transpose(y,1,5,2,padding='same')
+        y = tf.layers.conv3d_transpose(y,1,5,2,padding='same',use_bias=False)
 #        y = tf.contrib.layers.bias_add(y)
         img = tf.tanh(y)
         return img
@@ -110,26 +110,26 @@ def discriminator_wgan_gp_3d(img, dim=64, reuse=True, training=True):
         logit = fc(y, 1)
         return logit
 
-def generator3dSlim(z, dim=64, reuse=True, training=True):
-    bn = partial(batch_norm, is_training=training)
-    dconv_bn_relu = partial(dconv3d, normalizer_fn=bn, activation_fn=relu, biases_initializer=None)
-    fc_bn_relu = partial(fc, normalizer_fn=bn, activation_fn=relu, biases_initializer=None)
-
-    with tf.variable_scope('generator', reuse=reuse):
-        y = fc_bn_relu(z, 4 * 4 * 4 * dim * 4)
-        y = tf.reshape(y, [-1, 4, 4, 4, dim * 4])
-        y = dconv_bn_relu(y, dim * 2, 5, 2)
-        y = dconv_bn_relu(y, dim * 1, 5, 2)
-        img = tf.tanh(dconv3d(y, 1, 5, 2))
-        return img
-    
-def discriminator_wgan_gp_3dSlim(img, dim=64, reuse=True, training=True):
-    conv_ln_lrelu = partial(conv3d, normalizer_fn=ln, activation_fn=lrelu, biases_initializer=None)
-
-    with tf.variable_scope('discriminator', reuse=reuse):
-        y = lrelu(conv3d(img, dim, 5, 2))
-        y = conv_ln_lrelu(y, dim * 2, 5, 2)
-        y = conv_ln_lrelu(y, dim * 4, 5, 2)
-        y = conv_ln_lrelu(y, dim * 8, 5, 2)
-        logit = fc(y, 1)
-        return logit
+#def generator3dSlim(z, dim=64, reuse=True, training=True):
+#    bn = partial(batch_norm, is_training=training)
+#    dconv_bn_relu = partial(dconv3d, normalizer_fn=bn, activation_fn=relu, biases_initializer=None)
+#    fc_bn_relu = partial(fc, normalizer_fn=bn, activation_fn=relu, biases_initializer=None)
+#
+#    with tf.variable_scope('generator', reuse=reuse):
+#        y = fc_bn_relu(z, 4 * 4 * 4 * dim * 4)
+#        y = tf.reshape(y, [-1, 4, 4, 4, dim * 4])
+#        y = dconv_bn_relu(y, dim * 2, 5, 2)
+#        y = dconv_bn_relu(y, dim * 1, 5, 2)
+#        img = tf.tanh(dconv3d(y, 1, 5, 2))
+#        return img
+#    
+#def discriminator_wgan_gp_3dSlim(img, dim=64, reuse=True, training=True):
+#    conv_ln_lrelu = partial(conv3d, normalizer_fn=ln, activation_fn=lrelu, biases_initializer=None)
+#
+#    with tf.variable_scope('discriminator', reuse=reuse):
+#        y = lrelu(conv3d(img, dim, 5, 2))
+#        y = conv_ln_lrelu(y, dim * 2, 5, 2)
+#        y = conv_ln_lrelu(y, dim * 4, 5, 2)
+#        y = conv_ln_lrelu(y, dim * 8, 5, 2)
+#        logit = fc(y, 1)
+#        return logit

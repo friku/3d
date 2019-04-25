@@ -25,7 +25,7 @@ sample_batch_size = 10
 #imgs.shape = imgs.shape + (1,)
 #data_pool = utils.MemoryData({'img': imgs}, batch_size)
 
-data = np.load("3dDataIntFake.npy")*2-1
+data = np.load("3dDataInt.npy")*2-1
 def fn(data,batch_size):
     random = np.random.randint(0,data.shape[0],batch_size)
     sample_data = data[random]
@@ -96,10 +96,10 @@ it_cnt, update_cnt = utils.counter()
 # saver
 saver = tf.train.Saver(max_to_keep=5)
 # summary writer
-summary_writer = tf.summary.FileWriter('./summaries/3dganFakeSlim', sess.graph)
+summary_writer = tf.summary.FileWriter('./summaries/3dganFix', sess.graph)
 
 ''' initialization '''
-ckpt_dir = './checkpoints/3dganFakeSlim'
+ckpt_dir = './checkpoints/3dganFix'
 utils.mkdir(ckpt_dir + '/')
 if not utils.load_checkpoint(ckpt_dir, sess):
     sess.run(tf.global_variables_initializer())
@@ -149,25 +149,28 @@ try:
             f_sample_opt = (f_sample_opt+1)*0.5
             f_sample_opt = np.round(f_sample_opt, decimals=0)
 
-            save_dir = './sample_images_while_training/3dganFakeSlim1'
+            save_dir = './sample_images_while_training/3dganFix'
             utils.mkdir(save_dir + '/')
             utils.saveModel(f_sample_opt,save_dir,sample_batch_size,it)
 
-        # sample
-        if (it + 1) % 1 == 0:
-#            np.set_printoptions(threshold=np.inf)
-#            f_sample_opt = sess.run(real, feed_dict={real: real_ipt})
-#            print(f_sample_opt.shape)
-#            f_sample_opt = (f_sample_opt+1)*0.5
-#            f_sample_opt = np.round(f_sample_opt, decimals=0)
-            output_data = np.load("3dDataIntFake.npy")
-#            np.savetxt("./data.txt",output_data[0,:,:,:,0])
-            save_dir = './sample_images_while_training/3dganFakeSlim1'
-            utils.mkdir(save_dir + '/')
-            utils.saveModel(output_data,save_dir,100,it)
-            
-            utils.LoadModel("/home/fujimoto/3dgan/src/sample_images_while_training/3dDataIntFake/0_0.binvox")
-            break
+#        # sample
+#        if (it + 1) % 1 == 0:
+##            np.set_printoptions(threshold=np.inf)
+##            f_sample_opt = sess.run(real, feed_dict={real: real_ipt})
+##            print(f_sample_opt.shape)
+##            f_sample_opt = (f_sample_opt+1)*0.5
+##            f_sample_opt = np.round(f_sample_opt, decimals=0)
+#            output_data = np.load("3dDataIntFake.npy")
+##            np.savetxt("./data.txt",output_data[0,:,:,:,0])
+#            print("play1")
+#            save_dir = './sample_images_while_training/3dganFakeSlim1'
+#            utils.mkdir(save_dir + '/')
+#            utils.saveModel(output_data,save_dir,100,it)
+#            print("play2")
+#            
+#            utils.LoadModel("/home/fujimoto/3dgan/src/sample_images_while_training/3dganFakeSlim1/0_0.binvox")
+#            print("play3")
+#            break
             
 
 except Exception:

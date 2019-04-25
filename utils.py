@@ -387,6 +387,4 @@ def LoadModel(path):
     file_path = path
     with open(file_path, 'rb') as f:
         model = binvox_rw.read_as_3d_array(f)
-        print(model.dim)
-        print(model.data.shape)
     
