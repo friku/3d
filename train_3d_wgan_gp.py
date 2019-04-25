@@ -26,8 +26,6 @@ sample_batch_size = 10
 #data_pool = utils.MemoryData({'img': imgs}, batch_size)
 
 data = np.load("3dDataIntFake.npy")*2-1
-print(data.dtype)
-print(data.shape)
 def fn(data,batch_size):
     random = np.random.randint(0,data.shape[0],batch_size)
     sample_data = data[random]
@@ -37,8 +35,8 @@ def fn(data,batch_size):
 """ graphs """
 with tf.device('/gpu:%d' % gpu_id):
     ''' models '''
-    generator = models.generator3dSlim
-    discriminator = models.discriminator_wgan_gp_3dSlim
+    generator = models.generator3d
+    discriminator = models.discriminator_wgan_gp_3d
 
     ''' graph '''
     # inputs
@@ -151,21 +149,25 @@ try:
             f_sample_opt = (f_sample_opt+1)*0.5
             f_sample_opt = np.round(f_sample_opt, decimals=0)
 
-            save_dir = './sample_images_while_training/3dganFakeSlim'
+            save_dir = './sample_images_while_training/3dganFakeSlim1'
             utils.mkdir(save_dir + '/')
             utils.saveModel(f_sample_opt,save_dir,sample_batch_size,it)
 
         # sample
         if (it + 1) % 1 == 0:
-            
+#            np.set_printoptions(threshold=np.inf)
 #            f_sample_opt = sess.run(real, feed_dict={real: real_ipt})
 #            print(f_sample_opt.shape)
 #            f_sample_opt = (f_sample_opt+1)*0.5
 #            f_sample_opt = np.round(f_sample_opt, decimals=0)
             output_data = np.load("3dDataIntFake.npy")
-            save_dir = './sample_images_while_training/3dDataIntFake'
+#            np.savetxt("./data.txt",output_data[0,:,:,:,0])
+            save_dir = './sample_images_while_training/3dganFakeSlim1'
             utils.mkdir(save_dir + '/')
             utils.saveModel(output_data,save_dir,100,it)
+            
+            utils.LoadModel("/home/fujimoto/3dgan/src/sample_images_while_training/3dDataIntFake/0_0.binvox")
+            break
             
 
 except Exception:
